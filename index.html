@@ -299,6 +299,7 @@
     }
 
     .beam-svg { max-height: 210px; }
+    .beam-svg [data-point-index], .beam-svg [data-cut-line] { touch-action: none; }
 
     .plot-grid {
       display: grid;
@@ -333,6 +334,36 @@
 
     .check-card:hover {
       border-color: #b3c3d8;
+    }
+
+    .formula-tooltip {
+      position: relative;
+    }
+
+    .formula-tooltip::after {
+      content: attr(data-tooltip);
+      position: absolute;
+      z-index: 20;
+      left: 50%;
+      bottom: calc(100% + 8px);
+      width: max-content;
+      max-width: 280px;
+      transform: translateX(-50%);
+      padding: 8px 10px;
+      border-radius: 7px;
+      background: var(--navy);
+      color: white;
+      box-shadow: var(--shadow);
+      font-size: 11px;
+      line-height: 1.35;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 120ms ease;
+    }
+
+    .formula-tooltip:hover::after,
+    .formula-tooltip:focus-visible::after {
+      opacity: 1;
     }
 
     .check-head {
@@ -384,6 +415,8 @@
 
     .ratio-fill.green { width: 60%; background: var(--green); }
     .ratio-fill.amber { width: 75%; background: var(--amber); }
+
+    .ratio-fill.red { background: var(--red); }
 
     .suggestion {
       display: flex;
@@ -499,13 +532,6 @@
           <span>Point loads</span>
           <span class="unit-label">kips / ft</span>
         </div>
-        <div class="load-row point-load-row">
-          <div class="load-row-head"><span>Point load 1</span><button class="remove-button" type="button">Remove</button></div>
-          <div class="field-grid">
-            <div class="field"><label>Magnitude (kips)</label><input type="number" value="10" data-point-magnitude></div>
-            <div class="field"><label>Position (ft)</label><input type="number" value="5" min="0" max="20" step="0.25" data-point-position></div>
-          </div>
-        </div>
         <button class="add-button" type="button" id="addPoint">+ Add point load</button>
       </section>
 
@@ -538,8 +564,8 @@
           <label for="section">Section</label>
           <select id="section">
             <option>W8x10</option>
-            <option selected>W10x12</option>
-            <option>W12x26</option>
+            <option>W10x12</option>
+            <option selected>W12x26</option>
             <option>W14x22</option>
             <option>W16x26</option>
             <option>W18x35</option>
@@ -577,55 +603,13 @@
           <h2>Simply supported beam</h2>
           <span class="unit-label">Span: 20.00 ft</span>
         </div>
-        <svg class="beam-svg" viewBox="0 0 800 210" role="img" aria-label="Mock beam with loads and cut line">
-          <line x1="80" y1="95" x2="720" y2="95" stroke="#7d8ba0" stroke-width="14" stroke-linecap="round"/>
-          <polygon points="80,102 58,150 102,150" fill="#d9e3ef" stroke="#61738a" stroke-width="2"/>
-          <line x1="48" y1="152" x2="112" y2="152" stroke="#61738a" stroke-width="4"/>
-          <circle cx="720" cy="95" r="9" fill="#d9e3ef" stroke="#61738a" stroke-width="2"/>
-          <line x1="720" y1="104" x2="720" y2="152" stroke="#61738a" stroke-width="4"/>
-          <line x1="704" y1="152" x2="736" y2="152" stroke="#61738a" stroke-width="4"/>
-
-          <line x1="290" y1="86" x2="290" y2="20" stroke="#2563eb" stroke-width="4"/>
-          <polygon points="290,86 280,62 300,62" fill="#2563eb"/>
-          <line x1="290" y1="20" x2="290" y2="86" stroke="#2563eb" stroke-width="2"/>
-          <text x="290" y="12" text-anchor="middle" fill="#2563eb" font-size="12" font-weight="800">10.00 k</text>
-
-          <g stroke="#2563eb" stroke-width="2" fill="none">
-            <line x1="80" y1="58" x2="80" y2="88"/>
-            <polygon points="80,88 74,78 86,78" fill="#2563eb"/>
-            <line x1="160" y1="58" x2="160" y2="88"/>
-            <polygon points="160,88 154,78 166,78" fill="#2563eb"/>
-            <line x1="240" y1="58" x2="240" y2="88"/>
-            <polygon points="240,88 234,78 246,78" fill="#2563eb"/>
-            <line x1="320" y1="58" x2="320" y2="88"/>
-            <polygon points="320,88 314,78 326,78" fill="#2563eb"/>
-            <line x1="400" y1="58" x2="400" y2="88"/>
-            <polygon points="400,88 394,78 406,78" fill="#2563eb"/>
-            <line x1="480" y1="58" x2="480" y2="88"/>
-            <polygon points="480,88 474,78 486,78" fill="#2563eb"/>
-            <line x1="560" y1="58" x2="560" y2="88"/>
-            <polygon points="560,88 554,78 566,78" fill="#2563eb"/>
-            <line x1="640" y1="58" x2="640" y2="88"/>
-            <polygon points="640,88 634,78 646,78" fill="#2563eb"/>
-          </g>
-
-          <line x1="400" y1="18" x2="400" y2="170" stroke="#c43d4b" stroke-width="2" stroke-dasharray="6 5"/>
-          <rect x="388" y="172" rx="5" width="64" height="24" fill="#fff1f2" stroke="#efb8be"/>
-          <text x="420" y="188" text-anchor="middle" fill="#9f2632" font-size="11" font-weight="800">Cut 10.00 ft</text>
-
-          <path d="M80 185 L80 155" stroke="#2563eb" stroke-width="3"/>
-          <polygon points="80,155 70,170 90,170" fill="#2563eb"/>
-          <text x="80" y="198" text-anchor="middle" fill="#2563eb" font-size="11" font-weight="800">R1 +10.00 k</text>
-          <path d="M720 185 L720 155" stroke="#2563eb" stroke-width="3"/>
-          <polygon points="720,155 710,170 730,170" fill="#2563eb"/>
-          <text x="720" y="198" text-anchor="middle" fill="#2563eb" font-size="11" font-weight="800">R2 +2.50 k</text>
-        </svg>
+        <svg id="beamDrawing" class="beam-svg" viewBox="0 0 800 210" role="img" aria-label="Beam drawing with supports, loads, reactions, and cut line"></svg>
       </article>
 
       <section class="plot-grid" aria-label="Result diagrams">
         <article class="card plot-card">
           <h3>Shear <span class="unit-label">(kips)</span></h3>
-          <svg class="plot-svg" viewBox="0 0 260 145" role="img" aria-label="Placeholder shear diagram">
+          <svg id="shearPlot" class="plot-svg" viewBox="0 0 260 145" role="img" aria-label="Shear diagram">
             <line x1="24" y1="72" x2="240" y2="72" stroke="#b9c3d1"/>
             <line x1="24" y1="16" x2="24" y2="126" stroke="#e1e6ee"/>
             <path d="M24 72 L24 30 L84 30 L84 72 L138 72 L138 95 L240 95 L240 72 Z" fill="#cfe0ff" stroke="#2563eb" stroke-width="2"/>
@@ -639,7 +623,7 @@
 
         <article class="card plot-card">
           <h3>Moment <span class="unit-label">(kip-ft)</span></h3>
-          <svg class="plot-svg" viewBox="0 0 260 145" role="img" aria-label="Placeholder moment diagram">
+          <svg id="momentPlot" class="plot-svg" viewBox="0 0 260 145" role="img" aria-label="Moment diagram">
             <line x1="24" y1="118" x2="240" y2="118" stroke="#b9c3d1"/>
             <line x1="24" y1="16" x2="24" y2="126" stroke="#e1e6ee"/>
             <path d="M24 118 C75 76, 96 50, 132 38 C168 50, 198 78, 240 118 Z" fill="#d9f0e4" stroke="#1f8a5b" stroke-width="2"/>
@@ -653,7 +637,7 @@
 
         <article class="card plot-card">
           <h3>Deflection <span class="unit-label">(in)</span></h3>
-          <svg class="plot-svg" viewBox="0 0 260 145" role="img" aria-label="Placeholder deflection diagram">
+          <svg id="deflectionPlot" class="plot-svg" viewBox="0 0 260 145" role="img" aria-label="Deflection diagram">
             <line x1="24" y1="32" x2="240" y2="32" stroke="#b9c3d1"/>
             <line x1="24" y1="16" x2="24" y2="126" stroke="#e1e6ee"/>
             <path d="M24 32 C78 42, 105 94, 132 104 C164 92, 192 58, 240 32 L240 32 Z" fill="#e4d9f7" stroke="#7357bd" stroke-width="2"/>
@@ -667,51 +651,44 @@
       </section>
 
       <section class="checks-section" aria-label="Check cards">
-        <article class="card check-card" title="fb = |M|max × 12 / Sx">
-          <div class="check-head">
+        <article class="card check-card formula-tooltip" tabindex="0"
+          data-tooltip="fb = |M|max × 12 / Sx. Fail if bending stress exceeds Fb."
+          title="fb = |M|max × 12 / Sx">
+          <div class="check-head" id="bendingCheckHead">
             <span class="check-name">Bending</span>
             <span class="pass-badge">PASS</span>
           </div>
           <div class="check-values">
-            <div>Actual<span><strong>17.964 ksi</strong></span></div>
-            <div>Allowable<span><strong>30.000 ksi</strong></span></div>
+            <div>Actual<span><strong id="bendingActual">17.964 ksi</strong></span></div>
+            <div>Allowable<span><strong id="bendingAllowable">30.000 ksi</strong></span></div>
           </div>
           <div class="ratio-track" aria-label="Bending ratio 60 percent"><div class="ratio-fill green"></div></div>
         </article>
 
-        <article class="card check-card" title="|y|max ≤ L/240 or L/360">
-          <div class="check-head">
+        <article class="card check-card formula-tooltip" tabindex="0"
+          data-tooltip="Deflection passes if |y|max ≤ L/240 or L/360, with L in inches."
+          title="|y|max ≤ L/240 or L/360">
+          <div class="check-head" id="deflectionCheckHead">
             <span class="check-name">Deflection</span>
             <span class="pass-badge">PASS</span>
           </div>
           <div class="check-values">
-            <div>Actual<span><strong>0.609 in</strong></span></div>
-            <div>Allowable<span><strong>0.667 in</strong></span></div>
+            <div>Actual<span><strong id="deflectionActual">0.609 in</strong></span></div>
+            <div>Allowable<span><strong id="deflectionAllowable">0.667 in</strong></span></div>
           </div>
           <div class="ratio-track" aria-label="Deflection ratio 91 percent"><div class="ratio-fill amber"></div></div>
         </article>
       </section>
 
-      <article class="card suggestion">
-        <div>Lightest passing section: <strong>W10x12</strong></div>
-        <button class="use-button" type="button">Use section</button>
+      <article class="card suggestion" id="sectionSuggestion">
+        <div id="sectionSuggestionText">Lightest passing section: <strong>W10x12</strong></div>
+        <button class="use-button" id="useSectionButton" type="button">Use section</button>
       </article>
 
       <article class="card section-card">
         <div>
           <h2>Section view at 10.00 ft — left side</h2>
-          <svg class="section-svg" viewBox="0 0 500 150" role="img" aria-label="Mock left retained beam section">
-            <line x1="45" y1="75" x2="300" y2="75" stroke="#7d8ba0" stroke-width="18" stroke-linecap="round"/>
-            <polygon points="45,84 24,126 66,126" fill="#d9e3ef" stroke="#61738a" stroke-width="2"/>
-            <line x1="14" y1="128" x2="76" y2="128" stroke="#61738a" stroke-width="4"/>
-            <line x1="300" y1="35" x2="300" y2="115" stroke="#c43d4b" stroke-width="3"/>
-            <line x1="300" y1="75" x2="354" y2="75" stroke="#2563eb" stroke-width="3"/>
-            <polygon points="354,75 342,69 342,81" fill="#2563eb"/>
-            <path d="M352 38 A38 38 0 0 1 352 112" fill="none" stroke="#7357bd" stroke-width="3"/>
-            <text x="365" y="44" fill="#2563eb" font-size="11" font-weight="800">V = 7.50 k</text>
-            <text x="365" y="64" fill="#7357bd" font-size="11" font-weight="800">M = 37.50 kip-ft</text>
-            <text x="300" y="132" text-anchor="middle" fill="#9f2632" font-size="10" font-weight="800">Cut face</text>
-          </svg>
+          <svg id="sectionDrawing" class="section-svg" viewBox="0 0 500 150" role="img" aria-label="Live retained beam section"></svg>
         </div>
         <div class="cut-values">
           <div class="cut-value"><span>Cut position</span><strong id="cutValue">10.00 ft</strong></div>
@@ -728,6 +705,7 @@
     const cutRange = document.getElementById("cutRange");
     const cutNumber = document.getElementById("cutNumber");
     const cutValue = document.getElementById("cutValue");
+    const beamDrawing = document.getElementById("beamDrawing");
     const material = document.getElementById("material");
     const section = document.getElementById("section");
     const designStatus = document.getElementById("designStatus");
@@ -735,22 +713,311 @@
     const pointLoadList = document.querySelector(".input-card:nth-of-type(2)");
     const uniformLoadList = document.querySelector(".input-card:nth-of-type(3)");
 
-    // Calculation API: these functions are intentionally placeholders in Stage 2.
-    // Stage 4 should implement them with separate, named statics functions.
+    const SECTION_PROPERTIES = {
+      "W8x10": { Ix: 30.8, Sx: 7.81, weight: 10, E: 29000, Fb: 30 },
+      "W10x12": { Ix: 53.8, Sx: 10.9, weight: 12, E: 29000, Fb: 30 },
+      "W12x26": { Ix: 204, Sx: 33.4, weight: 26, E: 29000, Fb: 30 },
+      "W14x22": { Ix: 199, Sx: 29.0, weight: 22, E: 29000, Fb: 30 },
+      "W16x26": { Ix: 301, Sx: 38.4, weight: 26, E: 29000, Fb: 30 },
+      "W18x35": { Ix: 510, Sx: 57.6, weight: 35, E: 29000, Fb: 30 },
+      "W21x44": { Ix: 843, Sx: 81.6, weight: 44, E: 29000, Fb: 30 },
+      "W24x55": { Ix: 1350, Sx: 114, weight: 55, E: 29000, Fb: 30 },
+      "2x8": { Ix: 47.63, Sx: 13.14, weight: null, E: 1600, Fb: 0.900 },
+      "2x10": { Ix: 98.93, Sx: 21.39, weight: null, E: 1600, Fb: 0.900 },
+      "2x12": { Ix: 177.98, Sx: 31.64, weight: null, E: 1600, Fb: 0.900 }
+    };
+
+    // Structural calculations: all returns are in kips, ft, kip-ft, ksi, and inches.
+    function parseLoads(state) {
+      const pointLoads = state.pointLoads
+        .map((load) => ({ magnitude: Number(load.magnitude), position: Number(load.position) }))
+        .filter((load) => Number.isFinite(load.magnitude) && Number.isFinite(load.position));
+      const uniformLoads = state.uniformLoads
+        .map((load) => ({
+          magnitude: Number(load.magnitude),
+          start: Number(load.start),
+          end: Number(load.end)
+        }))
+        .filter((load) => Number.isFinite(load.magnitude) && Number.isFinite(load.start) && Number.isFinite(load.end));
+      return { pointLoads, uniformLoads };
+    }
+
+    function calculateLoadTotals(loads) {
+      let force = 0;
+      let moment = 0;
+
+      loads.pointLoads.forEach((load) => {
+        force += load.magnitude;
+        moment += load.magnitude * load.position;
+      });
+      loads.uniformLoads.forEach((load) => {
+        const low = Math.min(load.start, load.end);
+        const high = Math.max(load.start, load.end);
+        const magnitude = load.magnitude;
+        const length = high - low;
+        const totalForce = magnitude * length;
+        const centroid = (low + high) / 2;
+        force += totalForce;
+        moment += totalForce * centroid;
+      });
+
+      return { force, moment };
+    }
+
     function calculateReactions(state) {
-      return null;
+      const L = Number(state.span);
+      const loads = parseLoads(state);
+      const totals = calculateLoadTotals(loads);
+
+      if (state.support === "Cantilever") {
+        return {
+          left: totals.force,
+          right: 0,
+          fixedMoment: -totals.moment
+        };
+      }
+
+      const right = totals.moment / L;
+      const left = totals.force - right;
+      return { left, right, fixedMoment: 0 };
+    }
+
+    function sampleBeamLocations(state) {
+      const L = Number(state.span);
+      const locations = new Set([0, L]);
+      state.pointLoads.forEach((load) => {
+        const position = Number(load.position);
+        if (Number.isFinite(position)) locations.add(Math.max(0, Math.min(L, position)));
+      });
+      state.uniformLoads.forEach((load) => {
+        [load.start, load.end].forEach((value) => {
+          const position = Number(value);
+          if (Number.isFinite(position)) locations.add(Math.max(0, Math.min(L, position)));
+        });
+      });
+      for (let x = 0; x <= L; x += 0.25) locations.add(x);
+      return Array.from(locations).sort((a, b) => a - b);
     }
 
     function calculateShear(state) {
-      return null;
+      const L = Number(state.span);
+      const reactions = calculateReactions(state);
+      const loads = parseLoads(state);
+      return sampleBeamLocations(state).map((x) => {
+        let value = state.support === "Cantilever" ? reactions.left : reactions.left;
+        loads.pointLoads.forEach((load) => {
+          if (x >= load.position) value -= load.magnitude;
+        });
+        loads.uniformLoads.forEach((load) => {
+          const low = Math.min(load.start, load.end);
+          const high = Math.max(load.start, load.end);
+          const covered = Math.max(0, Math.min(x, high) - low);
+          value -= load.magnitude * covered;
+        });
+        if (state.support === "Cantilever" && x === 0) value = reactions.left;
+        return { x, value };
+      });
     }
 
     function calculateMoment(state) {
-      return null;
+      const reactions = calculateReactions(state);
+      const loads = parseLoads(state);
+      return sampleBeamLocations(state).map((x) => {
+        return { x, value: calculateMomentAtPosition(state, x, reactions, loads) };
+      });
+    }
+
+    function calculateMomentAtPosition(state, x, reactions, loads) {
+      let value = state.support === "Cantilever"
+        ? reactions.fixedMoment + reactions.left * x
+        : reactions.left * x;
+
+      loads.pointLoads.forEach((load) => {
+        if (x >= load.position) value -= load.magnitude * (x - load.position);
+      });
+      loads.uniformLoads.forEach((load) => {
+        const low = Math.min(load.start, load.end);
+        const high = Math.max(load.start, load.end);
+        if (x > low) {
+          const covered = Math.max(0, Math.min(x, high) - low);
+          if (covered > 0) {
+            value -= load.magnitude * covered * (x - (low + covered / 2));
+          }
+        }
+      });
+      return value;
     }
 
     function calculateDeflection(state) {
-      return null;
+      const section = SECTION_PROPERTIES[state.section];
+      if (!section) return sampleBeamLocations(state).map((point) => ({ x: point.x || point, value: 0 }));
+
+      const L = Number(state.span);
+      const step = 0.02;
+      const points = [];
+
+      for (let x = 0; x <= L + 1e-9; x += step) {
+        points.push(Math.min(L, x));
+      }
+      if (points[points.length - 1] !== L) points.push(L);
+
+      const reactions = calculateReactions(state);
+      const loads = parseLoads(state);
+      const EI = section.E * section.Ix;
+      let slope = 0;
+      let deflection = 0;
+      const uniquePoints = [];
+      let previousCurvature = 0;
+
+      for (let i = 0; i < points.length; i++) {
+        const x = points[i];
+        const moment = calculateMomentAtPosition(state, x, reactions, loads);
+        const curvature = -moment * 12 / EI;
+        uniquePoints.push({ x, deflection: 0, slope: 0 });
+
+        if (i > 0) {
+          const dxInches = (points[i] - points[i - 1]) * 12;
+          slope += (previousCurvature + curvature) / 2 * dxInches;
+          deflection += slope * dxInches;
+          uniquePoints[i].slope = slope;
+          uniquePoints[i].deflection = deflection;
+        }
+        previousCurvature = curvature;
+      }
+
+      if (state.support === "Simply supported" && uniquePoints.length > 1) {
+        const yL = uniquePoints[uniquePoints.length - 1].deflection;
+        uniquePoints.forEach((point) => {
+          point.deflection -= yL * point.x / L;
+        });
+      }
+
+      return uniquePoints.map((point) => ({ x: point.x, value: point.deflection }));
+    }
+
+    function calculateBeamChecks(state) {
+      const section = SECTION_PROPERTIES[state.section];
+      if (!section) return null;
+
+      const moments = calculateMoment(state);
+      const maxMoment = moments.reduce((maximum, point) =>
+        Math.abs(point.value) > Math.abs(maximum.value) ? point : maximum,
+        moments[0] || { x: 0, value: 0 });
+      const deflections = calculateDeflection(state);
+      const maxDeflection = deflections.reduce((maximum, point) =>
+        Math.abs(point.value) > Math.abs(maximum.value) ? point : maximum,
+        deflections[0] || { x: 0, value: 0 });
+
+      const bendingStress = Math.abs(maxMoment.value) * 12 / section.Sx;
+      const allowableDeflection = Number(state.span) * 12 / (state.deflectionLimit === "L/240" ? 240 : 360);
+      const bendingPass = bendingStress <= section.Fb;
+      const deflectionPass = Math.abs(maxDeflection.value) <= allowableDeflection;
+
+      return {
+        maxMoment,
+        maxDeflection,
+        bendingStress,
+        allowableDeflection,
+        bendingPass,
+        deflectionPass,
+        section
+      };
+    }
+
+    function calculateBeamModel(state) {
+      return {
+        reactions: calculateReactions(state),
+        shear: calculateShear(state),
+        moment: calculateMoment(state),
+        deflection: calculateDeflection(state),
+        checks: calculateBeamChecks(state)
+      };
+    }
+
+    function runBeamValidationCases() {
+      const cases = [
+        {
+          name: "Simply supported full uniform",
+          state: {
+            support: "Simply supported", span: 20, section: "W12x26",
+            deflectionLimit: "L/360",
+            pointLoads: [], uniformLoads: [{ magnitude: "1", start: "0", end: "20" }]
+          },
+          expected: { reactionLeft: 10, reactionRight: 10, moment: 50, deflection: 0.609 }
+        },
+        {
+          name: "Simply supported point load",
+          state: {
+            support: "Simply supported", span: 20, section: "W12x26",
+            deflectionLimit: "L/360",
+            pointLoads: [{ magnitude: "10", position: "5" }], uniformLoads: []
+          },
+          expected: { reactionLeft: 7.5, reactionRight: 2.5, moment: 37.5, deflection: 0.340 }
+        },
+        {
+          name: "Cantilever end point",
+          state: {
+            support: "Cantilever", span: 10, section: "W12x26",
+            deflectionLimit: "L/360",
+            pointLoads: [{ magnitude: "5", position: "10" }], uniformLoads: []
+          },
+          expected: { reactionLeft: 5, fixedMoment: -50, moment: 50, deflection: 0.487 }
+        },
+        {
+          name: "Simply supported lumber uniform",
+          state: {
+            support: "Simply supported", span: 12, section: "2x10",
+            deflectionLimit: "L/360",
+            pointLoads: [], uniformLoads: [{ magnitude: "0.05", start: "0", end: "12" }]
+          },
+          expected: { reactionLeft: 0.3, reactionRight: 0.3, moment: 0.9, deflection: 0.147 }
+        }
+      ];
+
+      return cases.map((test) => {
+        const model = calculateBeamModel(test.state);
+        const maxMoment = model.checks.maxMoment.value;
+        const maxDeflection = Math.abs(model.checks.maxDeflection.value);
+        return {
+          name: test.name,
+          reactions: model.reactions,
+          maxMoment,
+          maxDeflection,
+          pass:
+            Math.abs(model.reactions.left - test.expected.reactionLeft) < 0.02 &&
+            (test.expected.reactionRight === undefined ||
+              Math.abs(model.reactions.right - test.expected.reactionRight) < 0.02) &&
+            Math.abs(Math.abs(maxMoment) - test.expected.moment) < 0.02 &&
+            Math.abs(maxDeflection - test.expected.deflection) < 0.005
+        };
+      });
+    }
+
+    function calculatePassingSection(state) {
+      const steelNames = ["W8x10", "W10x12", "W12x26", "W14x22", "W16x26", "W18x35", "W21x44", "W24x55"];
+      const lumberNames = ["2x8", "2x10", "2x12"];
+      const names = state.material === "Steel" ? steelNames : lumberNames;
+      const candidates = [];
+
+      names.forEach((name) => {
+        const trialState = { ...state, section: name };
+        const trialChecks = calculateBeamChecks(trialState);
+        if (trialChecks && trialChecks.bendingPass && trialChecks.deflectionPass) {
+          candidates.push({ name, properties: SECTION_PROPERTIES[name], checks: trialChecks });
+        }
+      });
+
+      if (!candidates.length) return null;
+
+      if (state.material === "Steel") {
+        return candidates.slice().sort((a, b) => {
+          const weightDifference = (a.properties.weight || 0) - (b.properties.weight || 0);
+          if (weightDifference !== 0) return weightDifference;
+          return b.properties.Ix - a.properties.Ix;
+        })[0];
+      }
+
+      return candidates[0];
     }
 
     function getBeamState() {
@@ -868,9 +1135,36 @@
     function updateDesignStatus(valid) {
       designStatus.textContent = valid ? "Design valid" : "Last valid result";
       designStatus.classList.toggle("invalid", !valid);
+      designStatus.setAttribute("aria-live", "polite");
     }
 
-    // Drawing API: this stage updates labels only. Geometry/diagrams stay placeholder.
+    // Geometry calculation API: converts beam units to SVG coordinates only.
+    // Structural calculations remain in Stage 4.
+    function calculateBeamDrawingGeometry(state) {
+      const span = Math.max(4, Number(state.span) || 20);
+      const leftX = 80;
+      const rightX = 720;
+      const scale = (rightX - leftX) / span;
+      const cutPosition = Math.max(0, Math.min(span, Number(state.cutPosition) || span / 2));
+
+      return {
+        span,
+        leftX,
+        rightX,
+        beamY: 95,
+        scale,
+        cutX: leftX + cutPosition * scale
+      };
+    }
+
+    function svgPointToBeamPosition(event, geometry) {
+      const rect = beamDrawing.getBoundingClientRect();
+      const svgX = ((event.clientX - rect.left) / rect.width) * 800;
+      const rawPosition = (svgX - geometry.leftX) / geometry.scale;
+      return Math.max(0, Math.min(geometry.span, Math.round(rawPosition * 4) / 4));
+    }
+
+    // Drawing API: only geometry and SVG presentation are implemented in Stage 3.
     function updateMockDrawing(state) {
       const beamTitle = document.querySelector(".beam-title-row h2");
       beamTitle.textContent = state.support === "Cantilever" ? "Cantilever beam" : "Simply supported beam";
@@ -879,15 +1173,582 @@
 
       const sectionTitle = document.querySelector(".section-card h2");
       sectionTitle.textContent = `Section view at ${Number(state.cutPosition).toFixed(2)} ft — ${state.cutSide.toLowerCase()}`;
+      drawBeamDrawing(state);
+    }
+
+    function drawBeamDrawing(state) {
+      const geometry = calculateBeamDrawingGeometry(state);
+      const cantilever = state.support === "Cantilever";
+      const beamY = geometry.beamY;
+      let svg = "";
+
+      svg += `<line x1="${geometry.leftX}" y1="${beamY}" x2="${geometry.rightX}" y2="${beamY}" stroke="#7d8ba0" stroke-width="14" stroke-linecap="round"/>`;
+
+      if (cantilever) {
+        svg += `<rect x="52" y="48" width="28" height="94" fill="#d9e3ef" stroke="#61738a" stroke-width="2"/>`;
+        svg += `<line x1="52" y1="48" x2="52" y2="142" stroke="#61738a" stroke-width="5"/>`;
+        for (let y = 58; y <= 132; y += 12) {
+          svg += `<line x1="52" y1="${y}" x2="38" y2="${y + 12}" stroke="#61738a" stroke-width="2"/>`;
+        }
+      } else {
+        svg += `<polygon points="${geometry.leftX},${beamY + 7} ${geometry.leftX - 22},150 ${geometry.leftX + 22},150" fill="#d9e3ef" stroke="#61738a" stroke-width="2"/>`;
+        svg += `<line x1="${geometry.leftX - 32}" y1="152" x2="${geometry.leftX + 32}" y2="152" stroke="#61738a" stroke-width="4"/>`;
+        svg += `<circle cx="${geometry.rightX}" cy="${beamY}" r="9" fill="#d9e3ef" stroke="#61738a" stroke-width="2"/>`;
+        svg += `<line x1="${geometry.rightX}" y1="${beamY + 9}" x2="${geometry.rightX}" y2="152" stroke="#61738a" stroke-width="4"/>`;
+        svg += `<line x1="${geometry.rightX - 16}" y1="152" x2="${geometry.rightX + 16}" y2="152" stroke="#61738a" stroke-width="4"/>`;
+      }
+
+      state.uniformLoads.forEach((load, loadIndex) => {
+        const magnitude = Number(load.magnitude);
+        const start = Number(load.start);
+        const end = Number(load.end);
+        if (!Number.isFinite(magnitude) || !Number.isFinite(start) || !Number.isFinite(end) || start === end) return;
+
+        const low = Math.max(0, Math.min(start, end));
+        const high = Math.min(geometry.span, Math.max(start, end));
+        const lowX = geometry.leftX + low * geometry.scale;
+        const highX = geometry.leftX + high * geometry.scale;
+        const downward = magnitude >= 0;
+        const arrowTop = downward ? 58 : beamY + 20;
+        const arrowEnd = downward ? beamY - 9 : beamY - 9;
+
+        svg += `<g data-uniform-load="${loadIndex}" stroke="#2563eb" stroke-width="2" fill="none">`;
+        svg += `<line x1="${lowX}" y1="${downward ? arrowTop : arrowEnd}" x2="${highX}" y2="${downward ? arrowTop : arrowEnd}" stroke-opacity="0.45"/>`;
+        const arrowCount = Math.max(2, Math.min(10, Math.floor((highX - lowX) / 52)));
+        for (let i = 0; i <= arrowCount; i++) {
+          const x = lowX + ((highX - lowX) * i) / arrowCount;
+          svg += `<line x1="${x}" y1="${arrowTop}" x2="${x}" y2="${arrowEnd}" fill="none"/>`;
+          if (downward) {
+            svg += `<polygon points="${x},${arrowEnd} ${x - 6},${arrowEnd - 10} ${x + 6},${arrowEnd - 10}" fill="#2563eb" stroke="none"/>`;
+          } else {
+            svg += `<polygon points="${x},${arrowEnd} ${x - 6},${arrowEnd - 10} ${x + 6},${arrowEnd - 10}" fill="#2563eb" stroke="none"/>`;
+          }
+        }
+        svg += `</g>`;
+      });
+
+      state.pointLoads.forEach((load, loadIndex) => {
+        const magnitude = Number(load.magnitude);
+        const position = Number(load.position);
+        if (!Number.isFinite(magnitude) || !Number.isFinite(position)) return;
+
+        const x = geometry.leftX + position * geometry.scale;
+        const downward = magnitude >= 0;
+        const arrowStart = downward ? 20 : beamY + 30;
+        const arrowEnd = beamY - 9;
+        svg += `<g data-point-load="${loadIndex}" style="cursor:ew-resize">`;
+        svg += `<line x1="${x}" y1="${arrowStart}" x2="${x}" y2="${arrowEnd}" stroke="#2563eb" stroke-width="4"/>`;
+        if (downward) {
+          svg += `<polygon points="${x},${arrowEnd} ${x - 10},${arrowEnd - 24} ${x + 10},${arrowEnd - 24}" fill="#2563eb"/>`;
+          svg += `<text x="${x}" y="${Math.max(12, arrowStart - 4)}" text-anchor="middle" fill="#2563eb" font-size="12" font-weight="800">${magnitude.toFixed(2)} k</text>`;
+        } else {
+          svg += `<polygon points="${x},${arrowEnd} ${x - 10},${arrowEnd - 24} ${x + 10},${arrowEnd - 24}" fill="#2563eb" transform="rotate(180 ${x} ${arrowEnd - 12})"/>`;
+          svg += `<text x="${x}" y="${arrowStart + 14}" text-anchor="middle" fill="#2563eb" font-size="12" font-weight="800">${magnitude.toFixed(2)} k</text>`;
+        }
+        svg += `<circle data-point-index="${loadIndex}" cx="${x}" cy="${beamY}" r="12" fill="transparent"/>`;
+        svg += `</g>`;
+      });
+
+      svg += `<line data-cut-line="true" x1="${geometry.cutX}" y1="18" x2="${geometry.cutX}" y2="170" stroke="#c43d4b" stroke-width="2" stroke-dasharray="6 5"/>`;
+      svg += `<rect data-cut-line="true" x="${geometry.cutX - 9}" y="18" width="18" height="152" fill="transparent" style="cursor:ew-resize"/>`;
+      svg += `<rect x="${geometry.cutX - 34}" y="172" rx="5" width="68" height="24" fill="#fff1f2" stroke="#efb8be"/>`;
+      svg += `<text x="${geometry.cutX}" y="188" text-anchor="middle" fill="#9f2632" font-size="11" font-weight="800">Cut ${Number(state.cutPosition).toFixed(2)} ft</text>`;
+
+      if (cantilever) {
+        svg += `<path d="M80 185 L80 155" stroke="#2563eb" stroke-width="3"/>`;
+        svg += `<polygon points="80,155 70,170 90,170" fill="#2563eb"/>`;
+        svg += `<text x="80" y="198" text-anchor="middle" fill="#2563eb" font-size="11" font-weight="800">R — k</text>`;
+        svg += `<text x="48" y="38" text-anchor="middle" fill="#7357bd" font-size="11" font-weight="800">M — kip-ft</text>`;
+      } else {
+        svg += `<path d="M80 185 L80 155" stroke="#2563eb" stroke-width="3"/>`;
+        svg += `<polygon points="80,155 70,170 90,170" fill="#2563eb"/>`;
+        svg += `<text x="80" y="198" text-anchor="middle" fill="#2563eb" font-size="11" font-weight="800">R1 — k</text>`;
+        svg += `<path d="M720 185 L720 155" stroke="#2563eb" stroke-width="3"/>`;
+        svg += `<polygon points="720,155 710,170 730,170" fill="#2563eb"/>`;
+        svg += `<text x="720" y="198" text-anchor="middle" fill="#2563eb" font-size="11" font-weight="800">R2 — k</text>`;
+      }
+
+      beamDrawing.innerHTML = svg;
+      bindBeamDrawingDrag();
+    }
+
+    let activeBeamDrag = null;
+
+    function bindBeamDrawingDrag() {
+      beamDrawing.onpointerdown = (event) => {
+        const cutTarget = event.target.closest("[data-cut-line]");
+        const pointTarget = event.target.closest("[data-point-index]");
+
+        if (cutTarget) {
+          activeBeamDrag = { type: "cut" };
+          beamDrawing.setPointerCapture(event.pointerId);
+        } else if (pointTarget) {
+          activeBeamDrag = { type: "point", index: Number(pointTarget.dataset.pointIndex) };
+          beamDrawing.setPointerCapture(event.pointerId);
+        }
+      };
+
+      beamDrawing.onpointermove = (event) => {
+        if (!activeBeamDrag) return;
+        const state = getBeamState();
+        const geometry = calculateBeamDrawingGeometry(state);
+        const position = svgPointToBeamPosition(event, geometry);
+
+        if (activeBeamDrag.type === "cut") {
+          cutRange.value = position;
+          cutNumber.value = position;
+          validateBeamInputs();
+        } else if (activeBeamDrag.type === "point") {
+          const rows = document.querySelectorAll(".point-load-row");
+          const row = rows[activeBeamDrag.index];
+          if (row) {
+            const positionInput = row.querySelector('[data-point-position]');
+            positionInput.value = position;
+            validateBeamInputs();
+          }
+        }
+      };
+
+      beamDrawing.onpointerup = () => {
+        activeBeamDrag = null;
+      };
+
+      beamDrawing.onpointercancel = () => {
+        activeBeamDrag = null;
+      };
     }
 
     function runCalculationPlaceholders(state) {
-      // Keep all engineering values as placeholders during Stage 2.
-      calculateReactions(state);
-      calculateShear(state);
-      calculateMoment(state);
-      calculateDeflection(state);
+      const model = calculateBeamModel(state);
       updateMockDrawing(state);
+      drawReactionLabels(state, model.reactions);
+      drawAllDiagrams(state, model);
+      drawCheckCards(model.checks);
+      updateCutView(model);
+      drawSectionSuggestion(calculatePassingSection(state));
+    }
+
+    function drawSectionSuggestion(suggestion) {
+      const text = document.getElementById("sectionSuggestionText");
+      const button = document.getElementById("useSectionButton");
+      if (!suggestion) {
+        text.innerHTML = "No section in this material passes";
+        button.disabled = true;
+        button.textContent = "No passing section";
+        button.style.opacity = "0.55";
+        button.dataset.sectionName = "";
+        return;
+      }
+
+      text.innerHTML = `Lightest passing section: <strong>${suggestion.name}</strong>`;
+      button.disabled = false;
+      button.textContent = "Use section";
+      button.style.opacity = "1";
+      button.dataset.sectionName = suggestion.name;
+    }
+
+    function drawReactionLabels(state, reactions) {
+      const labelNodes = beamDrawing.querySelectorAll("text");
+      labelNodes.forEach((node) => {
+        if (node.textContent.startsWith("R")) node.remove();
+      });
+
+      if (state.support === "Cantilever") {
+        beamDrawing.insertAdjacentHTML("beforeend",
+          `<text x="80" y="198" text-anchor="middle" fill="#2563eb" font-size="11" font-weight="800">R +${reactions.left.toFixed(2)} k</text>` +
+          `<text x="48" y="38" text-anchor="middle" fill="#7357bd" font-size="11" font-weight="800">M ${reactions.fixedMoment.toFixed(2)} kip-ft</text>`);
+      } else {
+        beamDrawing.insertAdjacentHTML("beforeend",
+          `<text x="80" y="198" text-anchor="middle" fill="#2563eb" font-size="11" font-weight="800">R1 +${reactions.left.toFixed(2)} k</text>` +
+          `<text x="720" y="198" text-anchor="middle" fill="#2563eb" font-size="11" font-weight="800">R2 +${reactions.right.toFixed(2)} k</text>`);
+      }
+    }
+
+    function findAbsoluteMaximum(points) {
+      if (!points.length) return { x: 0, value: 0 };
+      return points.reduce((maximum, point) =>
+        Math.abs(point.value) > Math.abs(maximum.value) ||
+        (Math.abs(point.value) === Math.abs(maximum.value) && point.value >= maximum.value)
+          ? point : maximum,
+        points[0]);
+    }
+
+    function getPlotPath(points, xAccessor, yAccessor, left, right, top, bottom) {
+      if (!points.length) return "";
+      const xValues = points.map(xAccessor);
+      const yValues = points.map(yAccessor);
+      const minX = Math.min(...xValues);
+      const maxX = Math.max(...xValues);
+      const minY = Math.min(...yValues, 0);
+      const maxY = Math.max(...yValues, 0);
+      const spanX = maxX - minX || 1;
+      const spanY = maxY - minY || 1;
+
+      const coords = points.map((point) => {
+        const px = left + ((xAccessor(point) - minX) / spanX) * (right - left);
+        const py = bottom - ((yAccessor(point) - minY) / spanY) * (bottom - top);
+        return [px, py];
+      });
+
+      return {
+        path: coords.map((coord, index) => `${index === 0 ? "M" : "L"}${coord[0].toFixed(2)} ${coord[1].toFixed(2)}`).join(" "),
+        coords,
+        minX,
+        maxX,
+        minY,
+        maxY,
+        baseline: bottom - ((0 - minY) / spanY) * (bottom - top)
+      };
+    }
+
+    function drawSinglePlot(svg, points, options) {
+      const left = 24;
+      const right = 240;
+      const top = 16;
+      const bottom = 118;
+      const plot = getPlotPath(points, (point) => point.x, (point) => point.value, left, right, top, bottom);
+      const areaPath = `${plot.path} L${right} ${plot.baseline.toFixed(2)} L${left} ${plot.baseline.toFixed(2)} Z`;
+      const absoluteMaximum = findAbsoluteMaximum(points);
+      const maxX = plot.maxX;
+      const middleX = maxX / 2;
+
+      svg.innerHTML =
+        `<line x1="${left}" y1="${plot.baseline.toFixed(2)}" x2="${right}" y2="${plot.baseline.toFixed(2)}" stroke="#b9c3d1"/>` +
+        `<line x1="${left}" y1="${top}" x2="${left}" y2="126" stroke="#e1e6ee"/>` +
+        `<path d="${areaPath}" fill="${options.fill}" stroke="${options.stroke}" stroke-width="2"/>` +
+        `<g id="${options.id}-hover"></g>` +
+        `<text x="${left}" y="140" font-size="10" fill="#667085">0 ft</text>` +
+        `<text x="${left + (right - left) / 2}" y="140" text-anchor="middle" font-size="10" fill="#667085">${middleX.toFixed(0)} ft</text>` +
+        `<text x="${right}" y="140" text-anchor="end" font-size="10" fill="#667085">${maxX.toFixed(0)} ft</text>` +
+        `<text x="${left + 7}" y="${top + 10}" font-size="10" fill="${options.stroke}" font-weight="800">${options.labelPrefix} ${absoluteMaximum.value.toFixed(options.decimals)}</text>`;
+
+      svg.dataset.plotType = options.id;
+      svg.dataset.left = left;
+      svg.dataset.right = right;
+      svg.dataset.top = top;
+      svg.dataset.bottom = bottom;
+      svg._beamPlotData = { points, plot, options };
+    }
+
+    function drawAllDiagrams(state, model) {
+      drawSinglePlot(document.getElementById("shearPlot"), model.shear, {
+        id: "shear", fill: "#cfe0ff", stroke: "#2563eb", labelPrefix: "V max", decimals: 2
+      });
+      drawSinglePlot(document.getElementById("momentPlot"), model.moment, {
+        id: "moment", fill: "#d9f0e4", stroke: "#1f8a5b", labelPrefix: "M max", decimals: 2
+      });
+      drawSinglePlot(document.getElementById("deflectionPlot"), model.deflection, {
+        id: "deflection", fill: "#e4d9f7", stroke: "#7357bd", labelPrefix: "y max", decimals: 3
+      });
+      bindLinkedPlotHover(state);
+    }
+
+    function interpolatePlotValue(points, x) {
+      if (!points.length) return 0;
+      if (x <= points[0].x) return points[0].value;
+      if (x >= points[points.length - 1].x) return points[points.length - 1].value;
+      for (let i = 1; i < points.length; i++) {
+        if (x <= points[i].x) {
+          const fraction = (x - points[i - 1].x) / (points[i].x - points[i - 1].x);
+          return points[i - 1].value + (points[i].value - points[i - 1].value) * fraction;
+        }
+      }
+      return points[points.length - 1].value;
+    }
+
+    function bindLinkedPlotHover(state) {
+      const plotSvgs = [
+        document.getElementById("shearPlot"),
+        document.getElementById("momentPlot"),
+        document.getElementById("deflectionPlot")
+      ];
+
+      plotSvgs.forEach((svg) => {
+        svg.setAttribute("tabindex", "0");
+        svg.setAttribute("role", "img");
+        svg.setAttribute("aria-label", `${svg.id.replace("Plot", "")} diagram`);
+
+        svg.onpointermove = (event) => {
+          const rect = svg.getBoundingClientRect();
+          const svgX = ((event.clientX - rect.left) / rect.width) * 260;
+          const left = 24;
+          const right = 240;
+          const x = ((svgX - left) / (right - left)) * Number(state.span);
+          const clampedX = Math.max(0, Math.min(Number(state.span), x));
+
+          plotSvgs.forEach((plotSvg) => {
+            const hoverGroup = plotSvg.querySelector("[id$='-hover']");
+            if (!hoverGroup) return;
+            const data = plotSvg._beamPlotData;
+            const plotX = left + (clampedX / Number(state.span)) * (right - left);
+            const value = interpolatePlotValue(data.points, clampedX);
+            const yCoordinate = data.plot.baseline -
+              (value - data.plot.minY) / (data.plot.maxY - data.plot.minY || 1) *
+              (data.plot.bottom - data.plot.top);
+            hoverGroup.innerHTML =
+              `<line x1="${plotX.toFixed(2)}" y1="16" x2="${plotX.toFixed(2)}" y2="126" stroke="#c43d4b" stroke-width="1" stroke-dasharray="4 4"/>` +
+              `<circle cx="${plotX.toFixed(2)}" cy="${yCoordinate.toFixed(2)}" r="3" fill="#172033"/>`;
+            plotSvg.setAttribute("aria-label",
+              `${data.options.id} diagram; x ${clampedX.toFixed(2)} feet; value ${value.toFixed(data.options.decimals)}`);
+          });
+        };
+
+        svg.onkeydown = (event) => {
+          if (!["ArrowLeft", "ArrowRight", "Home", "End"].includes(event.key)) return;
+          event.preventEvent?.();
+          event.preventDefault();
+
+          const currentLabel = svg.getAttribute("aria-label") || "";
+          const match = currentLabel.match(/x ([\d.]+)/);
+          let x = match ? Number(match[1]) : Number(state.span) / 2;
+          if (event.key === "ArrowLeft") x -= 0.25;
+          if (event.key === "ArrowRight") x += 0.25;
+          if (event.key === "Home") x = 0;
+          if (event.key === "End") x = Number(state.span);
+          x = Math.max(0, Math.min(Number(state.span), x));
+
+          plotSvgs.forEach((plotSvg) => {
+            const data = plotSvg._beamPlotData;
+            const value = interpolatePlotValue(data.points, x);
+            const plotX = 24 + (x / Number(state.span)) * (240 - 24);
+            const yCoordinate = data.plot.baseline -
+              (value - data.plot.minY) / (data.plot.maxY - data.plot.minY || 1) *
+              (data.plot.bottom - data.plot.top);
+            const hoverGroup = plotSvg.querySelector("[id$='-hover']");
+            hoverGroup.innerHTML =
+              `<line x1="${plotX.toFixed(2)}" y1="16" x2="${plotX.toFixed(2)}" y2="126" stroke="#c43d4b" stroke-width="1" stroke-dasharray="4 4"/>` +
+              `<circle cx="${plotX.toFixed(2)}" cy="${yCoordinate.toFixed(2)}" r="3" fill="#172033"/>`;
+            plotSvg.setAttribute("aria-label",
+              `${data.options.id} diagram; x ${x.toFixed(2)} feet; value ${value.toFixed(data.options.decimals)}`);
+          });
+        };
+      });
+    }
+
+    function setCheckBadge(headId, passes) {
+      const head = document.getElementById(headId);
+      const badge = head.querySelector(".pass-badge");
+      badge.textContent = passes ? "PASS" : "FAIL";
+      badge.style.background = passes ? "var(--green-light)" : "#fff0f1";
+      badge.style.color = passes ? "var(--green)" : "var(--red)";
+    }
+
+    function setRatioFill(cardSelector, ratio) {
+      const card = document.querySelector(cardSelector);
+      const fill = card.querySelector(".ratio-fill");
+      const percentage = Math.max(0, ratio * 100);
+      fill.style.width = `${Math.min(100, percentage)}%`;
+      fill.style.background =
+        ratio > 1 ? "var(--red)" :
+        ratio >= 0.70 ? "var(--amber)" :
+        "var(--green)";
+      card.querySelector(".ratio-track").setAttribute("aria-label",
+        `Ratio ${percentage.toFixed(1)} percent`);
+    }
+
+    function drawCheckCards(checks) {
+      if (!checks) return;
+      document.getElementById("bendingActual").textContent = `${checks.bendingStress.toFixed(3)} ksi`;
+      document.getElementById("bendingAllowable").textContent = `${checks.section.Fb.toFixed(3)} ksi`;
+      document.getElementById("deflectionActual").textContent = `${Math.abs(checks.maxDeflection.value).toFixed(3)} in`;
+      document.getElementById("deflectionAllowable").textContent = `${checks.allowableDeflection.toFixed(3)} in`;
+      setCheckBadge("bendingCheckHead", checks.bendingPass);
+      setCheckBadge("deflectionCheckHead", checks.deflectionPass);
+      setRatioFill(".checks-section .check-card:nth-child(1)", checks.bendingStress / checks.section.Fb);
+      setRatioFill(".checks-section .check-card:nth-child(2)",
+        Math.abs(checks.maxDeflection.value) / checks.allowableDeflection);
+    }
+
+    function updateCutView(model) {
+      const cutPosition = Number(getBeamState().cutPosition);
+      const cutData = calculateCutSection(getBeamState(), model);
+      const cutTitle = document.querySelector(".section-card h2");
+      const side = getBeamState().cutSide;
+      cutTitle.textContent = `Section view at ${cutPosition.toFixed(2)} ft — ${side.toLowerCase()}`;
+
+      const cutValues = document.querySelectorAll(".cut-value strong");
+      if (cutValues.length >= 3) {
+        cutValues[0].textContent = `${cutPosition.toFixed(2)} ft`;
+        cutValues[1].textContent = cutData.shearLabel;
+        cutValues[2].textContent = `${cutData.moment.toFixed(2)} kip-ft`;
+      }
+
+      drawCutSection(getBeamState(), cutData);
+    }
+
+    function getExactPlotValue(points, x) {
+      const exact = points.find((point) => Math.abs(point.x - x) < 1e-7);
+      if (exact) return exact.value;
+      return interpolatePlotValue(points, x);
+    }
+
+    function calculateCutSection(state, model) {
+      const cutPosition = Number(state.cutPosition);
+      const L = Number(state.span);
+      const loads = parseLoads(state);
+      const reactions = model.reactions;
+
+      const pointAtCut = loads.pointLoads.filter((load) =>
+        Math.abs(load.position - cutPosition) < 1e-7);
+
+      let shearLeft = null;
+      let shearRight = null;
+      if (pointAtCut.length) {
+        shearRight = getExactPlotValue(model.shear, cutPosition);
+        shearLeft = shearRight + pointAtCut.reduce((sum, load) => sum + load.magnitude, 0);
+      } else {
+        shearRight = getExactPlotValue(model.shear, cutPosition);
+        shearLeft = shearRight;
+      }
+
+      const moment = getExactPlotValue(model.moment, cutPosition);
+      const retainedPointLoads = loads.pointLoads.filter((load) =>
+        state.cutSide === "Left side" ? load.position <= cutPosition : load.position >= cutPosition);
+      const retainedUniformLoads = loads.uniformLoads.filter((load) => {
+        const low = Math.min(load.start, load.end);
+        const high = Math.max(load.start, load.end);
+        return state.cutSide === "Left side" ? low < cutPosition : high > cutPosition;
+      });
+
+      const retainedSupportReaction = [];
+      if (state.support === "Cantilever") {
+        if (state.cutSide === "Left side") {
+          retainedSupportReaction.push(`Fixed reaction ${reactions.left.toFixed(2)} k`);
+          retainedSupportReaction.push(`Fixed moment ${reactions.fixedMoment.toFixed(2)} kip-ft`);
+        }
+      } else {
+        if (state.cutSide === "Left side") {
+          retainedSupportReaction.push(`Left reaction ${reactions.left.toFixed(2)} k`);
+        } else {
+          retainedSupportReaction.push(`Right reaction ${reactions.right.toFixed(2)} k`);
+        }
+      }
+
+      const shearLabel = pointAtCut.length
+        ? `V- ${shearLeft.toFixed(2)} k / V+ ${shearRight.toFixed(2)} k`
+        : `${shearRight.toFixed(2)} k`;
+
+      return {
+        cutPosition,
+        span: L,
+        side: state.cutSide,
+        shearLeft,
+        shearRight,
+        shearLabel,
+        moment,
+        pointAtCut,
+        retainedPointLoads,
+        retainedUniformLoads,
+        retainedSupportReaction
+      };
+    }
+
+    function drawCutSection(state, cutData) {
+      const svg = document.getElementById("sectionDrawing");
+      if (!svg) return;
+
+      const isLeft = cutData.side === "Left side";
+      const beamY = 75;
+      const leftEnd = 45;
+      const leftCut = 300;
+      const rightCut = 200;
+      const rightEnd = 455;
+
+      let startX;
+      let endX;
+      let cutX;
+      let scale;
+      let retainedLength;
+
+      if (isLeft) {
+        startX = leftEnd;
+        endX = leftCut;
+        cutX = leftCut;
+        retainedLength = cutData.cutPosition;
+        scale = retainedLength > 0 ? (endX - startX) / retainedLength : 0;
+      } else {
+        startX = rightCut;
+        endX = rightEnd;
+        cutX = rightCut;
+        retainedLength = cutData.span - cutData.cutPosition;
+        scale = retainedLength > 0 ? (endX - startX) / retainedLength : 0;
+      }
+
+      let markup = `<line x1="${startX}" y1="${beamY}" x2="${endX}" y2="${beamY}" stroke="#7d8ba0" stroke-width="18" stroke-linecap="round"/>`;
+
+      if (isLeft) {
+        markup += `<polygon points="${startX},84 ${startX - 21},126 ${startX + 21},126" fill="#d9e3ef" stroke="#61738a" stroke-width="2"/>`;
+        markup += `<line x1="${startX - 31}" y1="128" x2="${startX + 31}" y2="128" stroke="#61738a" stroke-width="4"/>`;
+      } else {
+        markup += `<circle cx="${endX}" cy="${beamY}" r="9" fill="#d9e3ef" stroke="#61738a" stroke-width="2"/>`;
+        markup += `<line x1="${endX}" y1="${beamY + 9}" x2="${endX}" y2="128" stroke="#61738a" stroke-width="4"/>`;
+        markup += `<line x1="${endX - 16}" y1="128" x2="${endX + 16}" y2="128" stroke="#61738a" stroke-width="4"/>`;
+      }
+
+      cutData.retainedUniformLoads.forEach((load) => {
+        const low = Math.min(load.start, load.end);
+        const high = Math.max(load.start, load.end);
+        const visibleLow = isLeft ? low : Math.max(low, cutData.cutPosition);
+        const visibleHigh = isLeft ? Math.min(high, cutData.cutPosition) : high;
+        if (visibleHigh <= visibleLow) return;
+
+        let lowX;
+        let highX;
+        if (isLeft) {
+          lowX = startX + visibleLow * scale;
+          highX = startX + visibleHigh * scale;
+        } else {
+          lowX = startX + (visibleLow - cutData.cutPosition) * scale;
+          highX = startX + (visibleHigh - cutData.cutPosition) * scale;
+        }
+
+        const arrowCount = Math.max(2, Math.min(6, Math.floor((highX - lowX) / 35)));
+        for (let i = 0; i <= arrowCount; i++) {
+          const x = lowX + (highX - lowX) * i / arrowCount;
+          markup += `<line x1="${x}" y1="42" x2="${x}" y2="${beamY - 9}" stroke="#2563eb" stroke-width="2"/>`;
+          if (load.magnitude >= 0) {
+            markup += `<polygon points="${x},${beamY - 9} ${x - 5},${beamY - 19} ${x + 5},${beamY - 19}" fill="#2563eb"/>`;
+          } else {
+            markup += `<polygon points="${x},42 ${x - 5},52 ${x + 5},52" fill="#2563eb"/>`;
+          }
+        }
+      });
+
+      cutData.retainedPointLoads.forEach((load) => {
+        let x;
+        if (isLeft) {
+          x = startX + load.position * scale;
+        } else if (retainedLength > 0) {
+          x = startX + (load.position - cutData.cutPosition) * scale;
+        }
+        if (!Number.isFinite(x)) return;
+
+        markup += `<line x1="${x}" y1="${load.magnitude >= 0 ? "18" : String(beamY - 9)}" x2="${x}" y2="${beamY - 9}" stroke="#2563eb" stroke-width="3"/>`;
+        if (load.magnitude >= 0) {
+          markup += `<polygon points="${x},${beamY - 9} ${x - 7},${beamY - 22} ${x + 7},${beamY - 22}" fill="#2563eb"/>`;
+        } else {
+          markup += `<polygon points="${x},18 ${x - 7},31 ${x + 7},31" fill="#2563eb"/>`;
+        }
+        markup += `<text x="${x}" y="12" text-anchor="middle" fill="#2563eb" font-size="10" font-weight="800">${load.magnitude.toFixed(2)} k</text>`;
+      });
+
+      markup += `<line x1="${cutX}" y1="28" x2="${cutX}" y2="122" stroke="#c43d4b" stroke-width="3"/>`;
+      markup += `<line x1="${cutX}" y1="${beamY}" x2="${isLeft ? cutX + 54 : cutX - 54}" y2="${beamY}" stroke="#2563eb" stroke-width="3"/>`;
+      markup += `<polygon points="${isLeft ? cutX + 54 : cutX - 54},${beamY} ${isLeft ? cutX + 42 : cutX - 42},${beamY - 6} ${isLeft ? cutX + 42 : cutX - 42},${beamY + 6}" fill="#2563eb"/>`;
+
+      markup += `<path d="M${isLeft ? cutX + 14 : cutX - 14} 46 A38 38 0 0 1 ${isLeft ? cutX + 14 : cutX - 14} 104" fill="none" stroke="#7357bd" stroke-width="3"/>`;
+      markup += `<text x="${isLeft ? cutX + 68 : cutX - 68}" y="42" text-anchor="${isLeft ? "start" : "end"}" fill="#2563eb" font-size="11" font-weight="800">V ${cutData.shearLabel}</text>`;
+      markup += `<text x="${isLeft ? cutX + 68 : cutX - 68}" y="62" text-anchor="${isLeft ? "start" : "end"}" fill="#7357bd" font-size="11" font-weight="800">M ${cutData.moment.toFixed(2)} kip-ft</text>`;
+      markup += `<text x="${cutX}" y="138" text-anchor="middle" fill="#9f2632" font-size="10" font-weight="800">Cut face</text>`;
+
+      cutData.retainedSupportReaction.forEach((label, index) => {
+        markup += `<text x="${isLeft ? 45 : 455}" y="${index === 0 ? 142 : 132}" text-anchor="middle" fill="#172033" font-size="9" font-weight="800">${label}</text>`;
+      });
+
+      svg.innerHTML = markup;
+      svg.setAttribute("aria-label",
+        `${isLeft ? "Left" : "Right"} retained beam section at ${cutData.cutPosition.toFixed(2)} feet; ` +
+        `shear ${cutData.shearLabel}; moment ${cutData.moment.toFixed(2)} kip-feet`);
     }
 
     function syncPair(range, number, onChange) {
@@ -979,7 +1840,7 @@
         const option = document.createElement("option");
         option.textContent = name;
         option.selected = resetToDefault
-          ? material.value === "Steel" && name === "W10x12"
+          ? material.value === "Steel" && name === "W12x26"
           : material.value === "Steel" ? name === "W10x12" : name === "2x8";
         section.appendChild(option);
       });
@@ -996,6 +1857,19 @@
       document.querySelectorAll(".point-load-row, .uniform-load-row").forEach((row) => row.remove());
       material.value = "Steel";
       updateMaterialOptions(true);
+      const uniformRow = document.createElement("div");
+      uniformRow.className = "load-row uniform-load-row";
+      uniformRow.innerHTML = `
+        <div class="load-row-head"><span>Uniform load 1</span><button class="remove-button" type="button">Remove</button></div>
+        <div class="field"><label>Magnitude (kips/ft)</label><input type="number" value="1" data-uniform-magnitude></div>
+        <div class="field-grid" style="margin-top:8px">
+          <div class="field"><label>Start (ft)</label><input type="number" value="0" min="0" max="20" step="0.25" data-uniform-start></div>
+          <div class="field"><label>End (ft)</label><input type="number" value="20" min="0" max="20" step="0.25" data-uniform-end></div>
+        </div>`;
+      document.getElementById("addUniform").before(uniformRow);
+      bindRowRemoval(uniformRow);
+      bindLoadInputs(uniformRow);
+      renumberLoadRows();
       document.querySelectorAll('input[name="limit"]')[1].checked = true;
       cutRange.value = 10;
       cutNumber.value = 10;
@@ -1041,6 +1915,27 @@
     });
 
     section.addEventListener("change", validateBeamInputs);
+    window.BeamDesignerValidation = runBeamValidationCases;
+    window.BeamDesignerModel = (state) => calculateBeamModel(state);
+    document.getElementById("useSectionButton").addEventListener("click", (event) => {
+      const name = event.currentTarget.dataset.sectionName;
+      if (!name) return;
+      if (material.value === "Steel") {
+        const options = Array.from(section.options);
+        const option = options.find((item) => item.textContent === name);
+        if (option) {
+          section.value = name;
+          section.dispatchEvent(new Event("change"));
+        }
+      } else {
+        const options = Array.from(section.options);
+        const option = options.find((item) => item.textContent === name);
+        if (option) {
+          section.value = name;
+          section.dispatchEvent(new Event("change"));
+        }
+      }
+    });
     validateBeamInputs();
   </script>
 </body>

@@ -52,7 +52,8 @@ a floor beam or deck joist.
 - Section
   - Units: section properties are in in^4, in^3, and lb/ft where applicable.
   - Range: the table options for the selected material.
-  - Default: W10x12 for the default Steel material.
+  - Default: W10x12 for a clean/default Steel selection. The opened example
+    and Reset to example use W12x26 with its 1 kip/ft full-span load.
   - Control: separate dropdown, filtered to the selected material.
   - Available sections:
 
@@ -97,10 +98,11 @@ a floor beam or deck joist.
 - Reset
   - Units: none.
   - Range: no selectable values.
-  - Default: restores the default input state.
+  - Default: restores the opened example state.
   - Control: "Reset to example" button. The reset state is simply supported,
-    20 ft span, no point loads, no uniform loads, Steel material, W10x12
-    section, L/360 deflection limit, midspan cut position, and left cut side.
+    20 ft span, no point loads, one 1 kip/ft uniform load from 0 to 20 ft,
+    Steel material, W12x26 section, L/360 deflection limit, midspan cut
+    position, and left cut side.
 - Load validation
   - Point-load positions are clamped to 0 and the span.
   - Uniform-load start and end positions are clamped to 0 and the span. If
@@ -214,6 +216,10 @@ a floor beam or deck joist.
   assistive technology.
 - On a phone, the section view follows the beam drawing and diagrams below
   the stacked input panel.
+- Browser support: current desktop and mobile versions of Chrome, Edge,
+  Firefox, and Safari. The app requires no server-side build or generated
+  assets beyond the single index.html file.
+- Print and export: not required in this phase.
 
 ## Validation
 1. Simply supported, 20 ft, W12x26, uniform 1 kip/ft over the full span:
@@ -229,6 +235,9 @@ a floor beam or deck joist.
 4. Simply supported 12 ft 2x10 joist, uniform 0.05 kip/ft: max moment
    0.90 kip-ft; fb = 0.505 ksi; max deflection 0.147 in at 6.00 ft;
    both pass.
+- Automated verification should run the four cases above plus negative
+  point and uniform loads, overlapping uniform loads, and span/cut boundary
+  values.
 
 ## Build stages
 
